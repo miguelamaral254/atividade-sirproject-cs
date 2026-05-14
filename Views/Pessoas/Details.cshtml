@@ -1,0 +1,58 @@
+@model SirProject.Web.DTOs.PessoaDTO
+
+@{
+    ViewData["Title"] = "Detalhes da Pessoa";
+}
+
+<div class="page-wrapper">
+    <div class="card-wrapper" style="max-width: 600px;">
+        <div class="card-container">
+            <div class="card-header">
+                <i class="fas fa-user-circle"></i>
+                <h1>Detalhes da Pessoa</h1>
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-item">
+                    <label><i class="fas fa-user"></i> Nome</label>
+                    <p>@Html.DisplayFor(model => model.Name)</p>
+                </div>
+
+                <div class="detail-item">
+                    <label><i class="fas fa-envelope"></i> E-mail</label>
+                    <p>@Html.DisplayFor(model => model.Email)</p>
+                </div>
+
+                <div class="detail-item">
+                    <label><i class="fas fa-phone"></i> Telefone</label>
+                    <p>@Html.DisplayFor(model => model.Phone)</p>
+                </div>
+
+                <div class="detail-item">
+                    <label><i class="fas fa-birthday-cake"></i> Data de Nascimento</label>
+                    <p>@Model.BirthDate.ToString("dd/MM/yyyy")</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <div class="detail-item">
+                        <label><i class="fas fa-image"></i> Foto</label>
+                        <img src="@Model.ImagePath" alt="Pessoa Image" class="detail-image" />
+                    </div>
+                }
+            </div>
+
+            <div class="detail-actions">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="fas fa-pencil-alt"></i> Editar
+                    </a>
+                }
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

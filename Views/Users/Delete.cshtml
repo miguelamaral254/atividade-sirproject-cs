@@ -1,0 +1,27 @@
+@model SirProject.Core.Entities.User
+
+@{
+    ViewData["Title"] = "Deletar Usuário";
+}
+
+<div class="grid-container">
+    <div class="grid-card">
+        <div class="grid-header">
+            <i class="fas fa-user-slash"></i>
+            <h1>Deletar Usuário</h1>
+            <p>Tem certeza que deseja remover este usuário?</p>
+        </div>
+
+        <div class="alert alert-danger">
+            <p>Ação irreversível: O usuário <strong>@Model.Username</strong> será removido permanentemente do sistema.</p>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="mt-4">
+                <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

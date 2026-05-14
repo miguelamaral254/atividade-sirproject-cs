@@ -1,0 +1,60 @@
+@using SirProject.Web.DTOs
+@using SirProject.Core.Enums
+@model SirProject.Web.DTOs.UserCreateDTO
+
+@{
+    ViewData["Title"] = "Criar Usuário";
+}
+
+<div class="page-wrapper">
+    <div class="card-wrapper">
+        <div class="card-container">
+            <div class="card-header">
+                <i class="fas fa-user-plus"></i>
+                <h1>Criar Usuário</h1>
+            </div>
+
+            <form asp-action="Create" class="person-form">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label asp-for="Username" class="form-label">
+                        <i class="fas fa-user"></i> Usuário
+                    </label>
+                    <input asp-for="Username" class="form-control" placeholder="Digite o nome de usuário" />
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label">
+                        <i class="fas fa-lock"></i> Senha
+                    </label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Digite a senha" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Role" class="form-label">
+                        <i class="fas fa-shield-alt"></i> Função
+                    </label>
+                    <select asp-for="Role" class="form-select" asp-items="Html.GetEnumSelectList<UserRole>()">
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger small"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Criar Usuário
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,89 @@
+@using SirProject.Core.Pagination
+@model PaginatedList<SirProject.Web.DTOs.PessoaDTO>
+
+@{
+    ViewData["Title"] = "Pessoas";
+}
+
+<div class="grid-container">
+    <div class="grid-card">
+        <div class="grid-header">
+            <i class="fas fa-users"></i>
+            <h1>Gestão de Pessoas</h1>
+            <p>Gerenciar cadastro de pessoas</p>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="grid-toolbar">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Adicionar Pessoa
+                </a>
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 20%">Nome</th>
+                        <th style="width: 25%">E-mail</th>
+                        <th style="width: 15%">Telefone</th>
+                        <th style="width: 15%">Data de Nascimento</th>
+                        <th style="width: 10%">Foto</th>
+                        <th style="width: 15%">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            @item.BirthDate.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                                <img src="@item.ImagePath" alt="Pessoa Image" style="max-width: 80px; border-radius: 4px;" />
+                            }
+                        </td>
+                        <td class="actions-cell">
+                            <a asp-action="Details" asp-route-id="@item.Id" title="Detalhes" class="icon-btn icon-view"><i class="fas fa-eye"></i></a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" title="Editar" class="icon-btn icon-edit"><i class="fas fa-pencil-alt"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" title="Deletar" class="icon-btn icon-delete" onclick="return confirm('Tem certeza que deseja deletar?');"><i class="fas fa-trash"></i></a>
+                            }
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Navegação de páginas">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-pageSize="@Model.PageSize">Anterior</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-pageSize="@Model.PageSize">Próximo</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
