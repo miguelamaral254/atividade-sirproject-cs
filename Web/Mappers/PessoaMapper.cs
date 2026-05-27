@@ -20,6 +20,19 @@ namespace SirProject.Web.Mappers
             };
         }
 
+        public static Pessoa ToEntity(this PessoaCreateDTO dto)
+        {
+            return new Pessoa
+            {
+                Name = dto.Name,
+                Email = dto.Email,
+                Phone = dto.Phone ?? string.Empty,
+                BirthDate = dto.BirthDate.Kind == DateTimeKind.Unspecified 
+                    ? DateTime.SpecifyKind(dto.BirthDate, DateTimeKind.Utc)
+                    : dto.BirthDate.ToUniversalTime()
+            };
+        }
+
         public static PessoaDTO ToDTO(this Pessoa entity)
         {
             return new PessoaDTO

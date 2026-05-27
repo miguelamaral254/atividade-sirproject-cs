@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using SirProject.Core;
 using SirProject.Infrastructure;
 using SirProject.Infrastructure.Middleware;
@@ -22,7 +23,32 @@ builder.Services.AddCore();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+});
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? throw new InvalidOperationException("JWT_KEY environment variable not set.");
 var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new InvalidOperationException("JWT_ISSUER environment variable not set.");
@@ -53,8 +79,16 @@ builder.Services.AddAuthentication(x =>
     {
         OnChallenge = context =>
         {
-            context.HandleResponse();
-            context.Response.Redirect("/Auth/Login");
+            if (context.Request.Path.StartsWithSegments("/api"))
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+            }
+            else
+            {
+                context.HandleResponse();
+                context.Response.Redirect("/Auth/Login");
+            }
             return Task.CompletedTask;
         }
     };
